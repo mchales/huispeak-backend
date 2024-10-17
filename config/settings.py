@@ -55,8 +55,11 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'djoser',
-    'apps.accounts',
     'corsheaders',
+    'apps.accounts',
+    'apps.storyline',
+    'apps.assistants'
+
 ]
 
 # REST Framework settings

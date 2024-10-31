@@ -2,10 +2,10 @@ name: Django CI
 on:
   push:
     branches:
-      - main
+      - development
   pull_request:
     branches:
-      - main
+      - development
 jobs:
   test:
     runs-on: ubuntu-latest

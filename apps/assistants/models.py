@@ -54,6 +54,18 @@ class Assistant(models.Model):
                     raise
             else:
                 super().save(*args, **kwargs)
+                
+    def delete(self, *args, **kwargs):
+        if self.openai_assistant_id:
+            try:
+                response = client.beta.assistants.delete(self.openai_assistant_id)
+                if not response.get('deleted', False):
+                    raise Exception(f"Assistant deletion failed: {response}")
+            except Exception as e:
+                print(f"Error deleting assistant: {e}")
+                raise
+        super().delete(*args, **kwargs)
+
 
     def build_instructions(self):
         """

@@ -1,11 +1,16 @@
 from rest_framework import serializers
-from apps.storyline.models import Story, Adventure, Quest
+from apps.storyline.models import Story, Adventure, Quest, Objectives
 
 
 class QuestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quest
         fields = ('id', 'title', 'quest_num')
+
+class ObjectivesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Objectives
+        fields = ('id', 'objective')
 
 
 class AdventureSerializer(serializers.ModelSerializer):

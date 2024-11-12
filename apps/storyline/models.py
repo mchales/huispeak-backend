@@ -148,7 +148,6 @@ class Quest(OrderedModel):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='quests')
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
-    objectives = models.TextField()
     quest_num = models.IntegerField(null=True, blank=True)
     include = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -159,3 +158,10 @@ class Quest(OrderedModel):
 
     def __str__(self):
         return f"Quest {self.quest_num} in Adventure {self.adventure.adventure_num}: {self.title}"
+    
+class Objectives(models.Model):
+    quest = models.ForeignKey(Quest, related_name='objectives', on_delete=models.CASCADE)
+    objective = models.TextField()
+    
+    def __str__(self):
+        return self.objective

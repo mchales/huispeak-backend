@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Story, Adventure, Quest
+from .models import Story, Adventure, Quest, Objectives
 
 # Note objects must be deleted from their page, not with a select delete
 class QuestInline(admin.TabularInline):
@@ -35,6 +35,12 @@ class QuestAdmin(admin.ModelAdmin):
     search_fields = ('title', 'adventure__title')
     list_filter = ('adventure__story', 'adventure')
 
+class ObjectivesAdmin(admin.ModelAdmin):
+    list_display = ('id', 'quest', 'objective')
+    ordering = ('quest',)
+    search_fields = ('quest__title', 'objective')
+
 admin.site.register(Story, StoryAdmin)
 admin.site.register(Adventure, AdventureAdmin)
 admin.site.register(Quest, QuestAdmin)
+admin.site.register(Objectives, ObjectivesAdmin)

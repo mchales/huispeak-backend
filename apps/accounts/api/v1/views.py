@@ -1,5 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import viewsets, permissions
+from apps.accounts.models import Personalization
+from .serializers import PersonalizationSerializer
 
 @api_view(['GET'])
 def get_routes(request):
@@ -21,3 +24,18 @@ def get_routes(request):
         }
     }
     return Response(routes)
+
+class PersonalizationViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing Personalization instances.
+    """
+    serializer_class = PersonalizationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Optionally, restrict to the authenticated user's personalization
+        return Personalization.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        # Automatically set the user to the authenticated user
+        serializer.save(user=self.request.user)

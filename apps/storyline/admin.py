@@ -30,7 +30,7 @@ class AdventureAdmin(admin.ModelAdmin):
     list_filter = ('story',)
 
 class QuestAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'quest_num', 'include', 'adventure', 'description', 'created_at', 'updated_at')
+    list_display = ('id', 'title', 'quest_num', 'include', 'adventure', 'description', 'created_at', 'image_name', 'updated_at')
     ordering = ('adventure', 'quest_num')
     search_fields = ('title', 'adventure__title')
     list_filter = ('adventure__story', 'adventure')

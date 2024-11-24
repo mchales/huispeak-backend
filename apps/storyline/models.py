@@ -149,6 +149,7 @@ class Quest(OrderedModel):
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
     quest_num = models.IntegerField(null=True, blank=True)
+    image_name = models.CharField(max_length=255, blank=True)
     include = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

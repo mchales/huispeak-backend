@@ -24,7 +24,7 @@ class QuestDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Quest
-        fields = ('id', 'title', 'description', 'quest_num', 'adventure', 'assistant_id', 'objectives')
+        fields = ('id', 'title', 'description', 'quest_num', 'adventure', 'image_name', 'assistant_id', 'objectives')
 
     def get_assistant_id(self, obj):
         try:

@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
+from .models import CustomUser, Personalization
 
+@admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = ['username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active', 'date_joined', 'last_login']
@@ -19,4 +20,16 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('username', 'email')
     ordering = ('username',)
 
-admin.site.register(CustomUser, CustomUserAdmin)
+
+@admin.register(Personalization)
+class PersonalizationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'difficulty')
+    search_fields = ('user__username', 'personal_details')
+    list_filter = ('difficulty',)
+    readonly_fields = ('id',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('user', 'difficulty', 'personal_details')
+        }),
+    )

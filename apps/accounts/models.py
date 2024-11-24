@@ -49,3 +49,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+class Personalization(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='personalization')
+    difficulty = models.IntegerField(default=1) # HSK 1,2,3,4,5
+    personal_details = models.TextField(blank=True, null=True)

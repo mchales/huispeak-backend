@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -117,21 +118,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 if ENVIRONMENT == 'development':
     DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'huispeak-dev-db',
+            'USER': 'postgres',
+            'PASSWORD': os.getenv('DATABASE_DEV_PASSWORD'),
+            'HOST': 'localhost',
+            'PORT': '5432',
         }
     }
-    # DATABASES = {
-    #     'default': {
-    #         'ENGINE': 'django.db.backends.postgresql',
-    #         'NAME': 'huispeak-dev-db',
-    #         'USER': 'postgres',
-    #         'PASSWORD': os.getenv('DATABASE_DEV_PASSWORD'),
-    #         'HOST': 'localhost',
-    #         'PORT': '5432',
-    #     }
-    # }
 
 elif ENVIRONMENT == 'production':
     DATABASES = {
@@ -177,6 +172,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+STATIC_URL = 'static/'
 
 
 # Default primary key field type

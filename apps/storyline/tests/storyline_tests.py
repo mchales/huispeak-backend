@@ -118,8 +118,8 @@ class TestOrderedModels:
         adventure = Adventure.objects.create(title="Main Adventure", description="Main Adventure Description", story=story)
 
         # Create quests
-        quest1 = Quest.objects.create(title="Quest One", description="First Quest", objectives="Objectives", adventure=adventure)
-        quest2 = Quest.objects.create(title="Quest Two", description="Second Quest", objectives="Objectives", adventure=adventure)
+        quest1 = Quest.objects.create(title="Quest One", description="First Quest",  adventure=adventure)
+        quest2 = Quest.objects.create(title="Quest Two", description="Second Quest", adventure=adventure)
 
         assert quest1.quest_num == 1
         assert quest2.quest_num == 2
@@ -201,9 +201,9 @@ class TestOrderedModels:
         # Create story, adventure, and quests
         story = Story.objects.create(title="Main Story", description="Main Story Description")
         adventure = Adventure.objects.create(title="Main Adventure", description="Main Adventure Description", story=story)
-        quest1 = Quest.objects.create(title="Quest One", description="First Quest", objectives="Objectives", adventure=adventure)
-        quest2 = Quest.objects.create(title="Quest Two", description="Second Quest", objectives="Objectives", adventure=adventure)
-        quest3 = Quest.objects.create(title="Quest Three", description="Third Quest", objectives="Objectives", adventure=adventure)
+        quest1 = Quest.objects.create(title="Quest One", description="First Quest",  adventure=adventure)
+        quest2 = Quest.objects.create(title="Quest Two", description="Second Quest",  adventure=adventure)
+        quest3 = Quest.objects.create(title="Quest Three", description="Third Quest",  adventure=adventure)
 
         # Delete quest2
         quest2.delete()
@@ -219,9 +219,9 @@ class TestOrderedModels:
         # Create story, adventure, and quests
         story = Story.objects.create(title="Main Story", description="Main Story Description")
         adventure = Adventure.objects.create(title="Main Adventure", description="Main Adventure Description", story=story)
-        quest1 = Quest.objects.create(title="Quest One", description="First Quest", objectives="Objectives", adventure=adventure)
-        quest2 = Quest.objects.create(title="Quest Two", description="Second Quest", objectives="Objectives", adventure=adventure)
-        quest3 = Quest.objects.create(title="Quest Three", description="Third Quest", objectives="Objectives", adventure=adventure)
+        quest1 = Quest.objects.create(title="Quest One", description="First Quest", adventure=adventure)
+        quest2 = Quest.objects.create(title="Quest Two", description="Second Quest",  adventure=adventure)
+        quest3 = Quest.objects.create(title="Quest Three", description="Third Quest",  adventure=adventure)
 
         # Move quest3 from position 3 to position 1
         quest3.quest_num = 1

@@ -35,7 +35,6 @@ class TestAssistantModels:
         quest = Quest.objects.create(
             title="Quest One",
             description="First Quest",
-            objectives="Objectives",
             adventure=adventure,  # Provide the required Adventure
         )
 
@@ -96,7 +95,6 @@ class TestAssistantModels:
         quest = Quest.objects.create(
             title="Quest One",
             description="First Quest",
-            objectives="Objectives",
             adventure=adventure,
         )
         quest_instructions = QuestInstructions.objects.create(
@@ -172,7 +170,6 @@ class TestAssistantModels:
         quest = Quest.objects.create(
             title="Quest One",
             description="First Quest",
-            objectives="Objectives",
             adventure=adventure,
         )
 
@@ -209,7 +206,6 @@ class TestAssistantModels:
         quest = Quest.objects.create(
             title="Quest One",
             description="First Quest",
-            objectives="Objectives",
             adventure=adventure,
         )
 
@@ -256,7 +252,6 @@ class TestAssistantModels:
         quest = Quest.objects.create(
             title="Quest One",
             description="First Quest",
-            objectives="Objectives",
             adventure=adventure,
         )
         quest_instructions = QuestInstructions.objects.create(
@@ -303,7 +298,6 @@ class TestAssistantModels:
         quest = Quest.objects.create(
             title="Quest One",
             description="First Quest",
-            objectives="Objectives",
             adventure=adventure,
         )
         quest_instructions = QuestInstructions.objects.create(

@@ -243,4 +243,5 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8083",
     "https://huispeak.com",
     "http://huispeak.com",
+    "https://huispeak-frontend.vercel.app",
 ]

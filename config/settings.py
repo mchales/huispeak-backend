@@ -39,7 +39,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if ENVIRONMENT == 'development' else False
 
-ALLOWED_HOSTS = ['https://huispeak-7ace14a2aaa6.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['huispeak-7ace14a2aaa6.herokuapp.com', '127.0.0.1']
 
 
 # Application definition

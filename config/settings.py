@@ -117,15 +117,21 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 if ENVIRONMENT == 'development':
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'huispeak-dev-db',
-            'USER': 'postgres',
-            'PASSWORD': os.getenv('DATABASE_DEV_PASSWORD'),
-            'HOST': 'localhost',
-            'PORT': '5432',
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.postgresql',
+    #         'NAME': 'huispeak-dev-db',
+    #         'USER': 'postgres',
+    #         'PASSWORD': os.getenv('DATABASE_DEV_PASSWORD'),
+    #         'HOST': 'localhost',
+    #         'PORT': '5432',
+    #     }
+    # }
 
 elif ENVIRONMENT == 'production':
     DATABASES = {

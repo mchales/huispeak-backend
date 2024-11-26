@@ -37,8 +37,8 @@ DEFAULT_API_VERSION = os.getenv('DEFAULT_API_VERSION', 'v1')
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True if ENVIRONMENT == 'development' else False
-DEBUG = True
+DEBUG = True if ENVIRONMENT == 'development' else False
+# DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'huispeak-7ace14a2aaa6.herokuapp.com']
 
@@ -120,14 +120,20 @@ WSGI_APPLICATION = 'config.wsgi.application'
 if ENVIRONMENT == 'development':
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'huispeak-dev-db',
-            'USER': 'postgres',
-            'PASSWORD': os.getenv('DATABASE_DEV_PASSWORD'),
-            'HOST': 'localhost',
-            'PORT': '5432',
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.postgresql',
+    #         'NAME': 'huispeak-dev-db',
+    #         'USER': 'postgres',
+    #         'PASSWORD': os.getenv('DATABASE_DEV_PASSWORD'),
+    #         'HOST': 'localhost',
+    #         'PORT': '5432',
+    #     }
+    # }
 
 elif ENVIRONMENT == 'production':
     DATABASES = {

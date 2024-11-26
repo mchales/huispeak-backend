@@ -5,7 +5,7 @@ from .models import Story, Adventure, Quest, Objectives
 class QuestInline(admin.TabularInline):
     model = Quest
     extra = 0
-    fields = ('quest_num', 'title', 'description', 'objectives')
+    fields = ('quest_num', 'title', 'description')
     ordering = ('quest_num',)
     show_change_link = True
 

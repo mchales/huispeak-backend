@@ -140,6 +140,31 @@ class Adventure(OrderedModel):
 
     def __str__(self):
         return f"Adventure {self.adventure_num} in Story {self.story.story_num}: {self.title}"
+    
+
+class Character(models.Model):
+
+    VOICE_CHOICES = [
+        ('alloy', 'Alloy'),
+        ('echo', 'Echo'),
+        ('fable', 'Fable'),
+        ('onyx', 'Onyx'),
+        ('nova', 'Nova'),
+        ('shimmer', 'Shimmer'),
+    ]
+
+    name = models.CharField(max_length=255) # actual name of the character
+    description = models.TextField()
+    voice = models.CharField(max_length=255, choices=VOICE_CHOICES, default='alloy')
+
+    # There could be so many more things, attributes, demographic, skills, backstory, etc.
+
+    def __str__(self):
+        return self.name
+    
+    def as_text(self):
+        return "Name: " + self.name + "\n" + "Description: " + self.description + "\n"
+
 
 class Quest(OrderedModel):
     num_field_name = 'quest_num'
@@ -148,6 +173,7 @@ class Quest(OrderedModel):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='quests')
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='quests', null=True, blank=True) # Ideally shouldn't be nullable
     quest_num = models.IntegerField(null=True, blank=True)
     image_name = models.CharField(max_length=255, blank=True)
     include = models.BooleanField(default=True)
@@ -159,6 +185,14 @@ class Quest(OrderedModel):
 
     def __str__(self):
         return f"Quest {self.quest_num} in Adventure {self.adventure.adventure_num}: {self.title}"
+    
+    def as_text(self):
+
+         # Get objectives as a list of strings
+        objectives_text = "\n".join([f"- {obj.objective}" for obj in self.objectives.all()])
+
+        return "Title: " + self.title + "\n" + "Description: " + self.description + "\n" + "Objectives: " + objectives_text + "\n"
+    
     
 class Objectives(models.Model):
     quest = models.ForeignKey(Quest, related_name='objectives', on_delete=models.CASCADE)

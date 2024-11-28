@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .serializers import StorySerializer, AdventureSerializer, QuestSerializer, ObjectivesSerializer
+from .serializers import StorySerializer, AdventureSerializer, QuestSerializer, ObjectivesSerializer, CharacterSerializer
 from apps.storyline.models import Story, Adventure, Quest
 from apps.assistants.models import QuestAssistant
 
@@ -19,12 +19,12 @@ class AdventureDetailSerializer(serializers.ModelSerializer):
 class QuestDetailSerializer(serializers.ModelSerializer):
     adventure = AdventureSerializer()
     assistant_id = serializers.SerializerMethodField()
-
+    character = CharacterSerializer()
     objectives = ObjectivesSerializer(many=True, read_only=True)
 
     class Meta:
         model = Quest
-        fields = ('id', 'title', 'description', 'quest_num', 'adventure', 'image_name', 'assistant_id', 'objectives')
+        fields = ('id', 'title', 'description', 'quest_num', 'adventure', 'image_name', 'assistant_id', 'objectives', 'character')
 
     def get_assistant_id(self, obj):
         try:

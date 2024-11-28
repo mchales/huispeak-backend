@@ -36,9 +36,10 @@ class Assistant(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        with transaction.atomic():
+        with transaction.atomic(): 
+            instructions = self.build_instructions()
             if not self.openai_assistant_id:
-                instructions = self.build_instructions()
+                # Creating a new assistant
                 try:
                     assistant = client.beta.assistants.create(
                         instructions=instructions,
@@ -53,6 +54,16 @@ class Assistant(models.Model):
                     print(f"Error creating assistant: {e}")
                     raise
             else:
+                # Updating the assistant instructions
+                try:
+                    assistant = client.beta.assistants.update(
+                        self.openai_assistant_id,
+                        instructions=instructions,
+                    )
+                    super().save(*args, **kwargs)
+                except Exception as e:
+                    print(f"Error updating assistant: {e}")
+                    raise
                 super().save(*args, **kwargs)
                 
     def delete(self, *args, **kwargs):
@@ -69,13 +80,19 @@ class Assistant(models.Model):
 
     def build_instructions(self):
         """
-        Combine instructions from general instructions and quest instructions.
+        Combine instructions from general instructions, quest instructions,
+        and include data from Character, Quest, and Objectives.
         """
         instructions = ""
         if self.general_instructions and self.general_instructions.instructions:
             instructions += self.general_instructions.instructions.strip() + "\n\n"
         if self.quest_instructions and self.quest_instructions.instructions:
-            instructions += self.quest_instructions.instructions.strip()
+            instructions += self.quest_instructions.instructions.strip() + "\n\n"
+        # Include Character information
+        if self.quest.character:
+            instructions += "Adopt the personality described in the character section below:\n" + self.quest.character.as_text() + "\n\n"
+        # Include Quest information
+        instructions += "This is the quest instructions the individual you are talking to is following, you should follow and push them to complete the objectives:\n" + self.quest.as_text() + "\n\n"
         return instructions.strip()
 
 

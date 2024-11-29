@@ -32,6 +32,23 @@
         }
    ```
 
+4. Create .env.development file
+   ```
+   DJANGO_ENV="development"
+   SECRET_KEY="your-django-secret-key"
+
+   EMAIL_HOST_PASSWORD="your-emal-host-password"
+   EMAIL_HOST_USER="your-host-emal"
+   DEFAULT_FROM_EMAIL="your-from-email"
+   
+   DEFAULT_API_VERSION="v1"
+   
+   FRONTEND_URL=localhost:8083
+   OPENAI_API_KEY="your-api-key"
+   DATABASE_DEV_PASSWORD="your-password"
+   DATABASE_PROD_PASSWORD="your-password"
+   ```
+
 ## Running the Server
 
 To start the development server, run:

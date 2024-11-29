@@ -10,6 +10,20 @@ jobs:
   test:
     runs-on: ubuntu-latest
     environment: development
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: huispeak-dev-db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
@@ -18,18 +32,33 @@ jobs:
       DEFAULT_API_VERSION: ${{ secrets.DEFAULT_API_VERSION }}
       FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      DATABASE_DEV_PASSWORD: postgres # Added to match the PostgreSQL service
     steps:
       - name: Check out code
         uses: actions/checkout@v2
+
+      - name: Install PostgreSQL Client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for PostgreSQL..."
+            sleep 1
+          done
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: "3.13"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements/development.txt
+
       - name: Run migrations
         run: python manage.py migrate
+
       - name: Run tests with pytest
         run: pytest

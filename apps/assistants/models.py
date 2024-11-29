@@ -64,7 +64,6 @@ class Assistant(models.Model):
                 except Exception as e:
                     print(f"Error updating assistant: {e}")
                     raise
-                super().save(*args, **kwargs)
                 
     def delete(self, *args, **kwargs):
         if self.openai_assistant_id:

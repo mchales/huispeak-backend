@@ -118,26 +118,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 #     }
 
 if ENVIRONMENT == 'development':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'huispeak_prod_db',
-            'USER': 'postgres',
-            'PASSWORD': os.getenv('DATABASE_PROD_PASSWORD'),
-            'HOST': 'database-1.cpau80aukaa3.us-east-2.rds.amazonaws.com',
-            'PORT': '5432',
-        }
-    }
     # DATABASES = {
     #     'default': {
     #         'ENGINE': 'django.db.backends.postgresql',
-    #         'NAME': 'huispeak-dev-db',
+    #         'NAME': 'huispeak_prod_db',
     #         'USER': 'postgres',
-    #         'PASSWORD': os.getenv('DATABASE_DEV_PASSWORD'),
-    #         'HOST': 'localhost',
+    #         'PASSWORD': os.getenv('DATABASE_PROD_PASSWORD'),
+    #         'HOST': 'database-1.cpau80aukaa3.us-east-2.rds.amazonaws.com',
     #         'PORT': '5432',
     #     }
     # }
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'huispeak-dev-db',
+            'USER': 'postgres',
+            'PASSWORD': os.getenv('DATABASE_DEV_PASSWORD'),
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
 elif ENVIRONMENT == 'production':
     DATABASES = {

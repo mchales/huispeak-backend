@@ -173,7 +173,7 @@ class Quest(OrderedModel):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='quests')
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
-    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='quests', null=True, blank=True) # Ideally shouldn't be nullable
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='quests')
     quest_num = models.IntegerField(null=True, blank=True)
     image_name = models.CharField(max_length=255, blank=True)
     include = models.BooleanField(default=True)

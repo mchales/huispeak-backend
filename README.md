@@ -4,7 +4,7 @@
 
 ## Features
 
-- **User Authentication**: Secure user login, registration, and account management, implemented with Simple JWT and Djoser for robust JWT-based authentication.
+- **User Authentication**: Secure user login, registration, and account management, implemented with Simple JWT and Djoser for JWT-based authentication.
 - **Lesson Creation**: Create and manage conversational lessons for immersive learning.
 - **OpenAI Assistant Integration**: Enhance conversation practice with AI-generated responses and guidance.
 
@@ -21,6 +21,16 @@
    ```bash
    pip install -r development/requirements.txt
    ```
+3. **Database Setup**
+   If you don't want to configure PostgreSQL with a tool like pgAdmin, you should use the sqlite database as your main database. Within settings.py include
+   ```python
+   if ENVIRONMENT == 'development':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+   ```
 
 ## Running the Server
 
@@ -28,6 +38,10 @@ To start the development server, run:
 
 ```bash
 python manage.py runserver
+```
+You can access the server at http://127.0.0.1:8000/ and create a user to log in with the command
+```bash
+python manage.py createsuperuser
 ```
 
 ## Running Tests

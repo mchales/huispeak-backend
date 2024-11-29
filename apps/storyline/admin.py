@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import Story, Adventure, Quest, Objectives
+from .models import Story, Adventure, Quest, Objectives, Character
 
 # Note objects must be deleted from their page, not with a select delete
 class QuestInline(admin.TabularInline):
     model = Quest
     extra = 0
-    fields = ('quest_num', 'title', 'description', 'objectives')
+    fields = ('quest_num', 'title', 'description')
     ordering = ('quest_num',)
     show_change_link = True
 
@@ -30,7 +30,7 @@ class AdventureAdmin(admin.ModelAdmin):
     list_filter = ('story',)
 
 class QuestAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'quest_num', 'include', 'adventure', 'description', 'created_at', 'image_name', 'updated_at')
+    list_display = ('id', 'title', 'quest_num', 'include', 'adventure', 'description', 'character' ,'created_at', 'image_name', 'updated_at')
     ordering = ('adventure', 'quest_num')
     search_fields = ('title', 'adventure__title')
     list_filter = ('adventure__story', 'adventure')
@@ -40,7 +40,12 @@ class ObjectivesAdmin(admin.ModelAdmin):
     ordering = ('quest',)
     search_fields = ('quest__title', 'objective')
 
+class CharacterAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description', 'voice')
+    search_fields = ('name', 'description', 'voice')
+
 admin.site.register(Story, StoryAdmin)
 admin.site.register(Adventure, AdventureAdmin)
 admin.site.register(Quest, QuestAdmin)
 admin.site.register(Objectives, ObjectivesAdmin)
+admin.site.register(Character, CharacterAdmin)

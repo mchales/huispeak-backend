@@ -38,8 +38,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if ENVIRONMENT == 'development' else False
+# DEBUG = True
 
-ALLOWED_HOSTS = ['huispeak-7ace14a2aaa6.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'huispeak-7ace14a2aaa6.herokuapp.com']
 
 
 # Application definition
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -76,6 +78,7 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -115,22 +118,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 #     }
 
 if ENVIRONMENT == 'development':
-    DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
     # DATABASES = {
     #     'default': {
     #         'ENGINE': 'django.db.backends.postgresql',
-    #         'NAME': 'huispeak-dev-db',
+    #         'NAME': 'huispeak_prod_db',
     #         'USER': 'postgres',
-    #         'PASSWORD': os.getenv('DATABASE_DEV_PASSWORD'),
-    #         'HOST': 'localhost',
+    #         'PASSWORD': os.getenv('DATABASE_PROD_PASSWORD'),
+    #         'HOST': 'database-1.cpau80aukaa3.us-east-2.rds.amazonaws.com',
     #         'PORT': '5432',
     #     }
     # }
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'huispeak-dev-db',
+            'USER': 'postgres',
+            'PASSWORD': os.getenv('DATABASE_DEV_PASSWORD'),
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
 elif ENVIRONMENT == 'production':
     DATABASES = {
@@ -176,6 +183,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 # Default primary key field type
@@ -243,5 +253,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8083",
     "https://huispeak.com",
     "http://huispeak.com",
+    "https://www.huispeak.com",
     "https://huispeak-frontend.vercel.app",
 ]

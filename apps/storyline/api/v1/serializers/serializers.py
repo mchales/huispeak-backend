@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.storyline.models import Story, Adventure, Quest, Objectives
+from apps.storyline.models import Story, Adventure, Quest, Objectives, Character
 
 
 class QuestSerializer(serializers.ModelSerializer):
@@ -37,3 +37,8 @@ class StorySerializer(serializers.ModelSerializer):
         # Order adventures by 'adventure_num'
         adventures = obj.adventures.filter(include=True).order_by('adventure_num')
         return AdventureSerializer(adventures, many=True).data
+
+class CharacterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Character
+        fields = ('id', 'name', 'voice')

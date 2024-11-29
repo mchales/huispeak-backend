@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from django.db.utils import IntegrityError
-from apps.storyline.models import Story, Adventure, Quest
+from apps.storyline.models import Story, Adventure, Quest, Character
 from apps.assistants.models import (
     GeneralInstructions,
     QuestInstructions,
@@ -32,15 +32,28 @@ class TestAssistantModels:
             title="Adventure One", description="First Adventure", story=story
         )
 
+        # Create Character
+        character = Character.objects.create(
+            name="Character One",
+            description="First Character",
+            voice="alloy"
+        )
+
+        # Create Quest with Character
         quest = Quest.objects.create(
             title="Quest One",
             description="First Quest",
-            adventure=adventure,  # Provide the required Adventure
+            character=character,
+            adventure=adventure, 
         )
 
         quest_instructions = QuestInstructions.objects.create(
             quest=quest, name="Quest Specific", instructions="Quest Instructions"
         )
+
+        # Mock the as_text methods
+        character.as_text = MagicMock(return_value="Character As Text")
+        quest.as_text = MagicMock(return_value="Quest As Text")
 
         assistant = Assistant(
             quest=quest,
@@ -56,10 +69,17 @@ class TestAssistantModels:
         assert assistant.openai_assistant_id == "asst_mock_id"
 
         # Ensure assistant was created via the API with correct parameters
-        instructions_combined = "General Instructions\n\nQuest Instructions"
+        expected_instructions = (
+            "General Instructions\n\n"
+            "Quest Instructions\n\n"
+            "Adopt the personality described in the character section below:\n"
+            "Character As Text\n\n"
+            "This is the quest instructions the individual you are talking to is following, you should follow and push them to complete the objectives:\n"
+            "Quest As Text"
+        )
 
         mock_client.beta.assistants.create.assert_called_once_with(
-            instructions=instructions_combined,
+            instructions=expected_instructions,
             name=assistant.name,
             tools=[],
             model=assistant.model,
@@ -92,9 +112,18 @@ class TestAssistantModels:
             title="Adventure One", description="First Adventure", story=story
         )
 
+        # Create Character
+        character = Character.objects.create(
+            name="Character One",
+            description="First Character",
+            voice="alloy"
+        )
+
+        # Create Quest with Character
         quest = Quest.objects.create(
             title="Quest One",
             description="First Quest",
+            character=character,
             adventure=adventure,
         )
         quest_instructions = QuestInstructions.objects.create(
@@ -167,9 +196,19 @@ class TestAssistantModels:
         adventure = Adventure.objects.create(
             title="Adventure One", description="First Adventure", story=story
         )
+
+        # Create Character
+        character = Character.objects.create(
+            name="Character One",
+            description="First Character",
+            voice="alloy"
+        )
+
+        # Create Quest with Character
         quest = Quest.objects.create(
             title="Quest One",
             description="First Quest",
+            character=character,
             adventure=adventure,
         )
 
@@ -177,7 +216,12 @@ class TestAssistantModels:
             quest=quest, name="Quest Specific", instructions="Quest Instructions"
         )
 
+        # Mock the as_text methods
+        character.as_text = MagicMock(return_value="Character As Text")
+        quest.as_text = MagicMock(return_value="Quest As Text")
+
         assistant = Assistant(
+            quest=quest,
             quest_instructions=quest_instructions,
             general_instructions=general_instructions,
             name="Test Assistant",
@@ -185,7 +229,14 @@ class TestAssistantModels:
         )
 
         instructions = assistant.build_instructions()
-        expected_instructions = "General Instructions\n\nQuest Instructions"
+        expected_instructions = (
+            "General Instructions\n\n"
+            "Quest Instructions\n\n"
+            "Adopt the personality described in the character section below:\n"
+            "Character As Text\n\n"
+            "This is the quest instructions the individual you are talking to is following, you should follow and push them to complete the objectives:\n"
+            "Quest As Text"
+        )
 
         assert instructions == expected_instructions
 
@@ -203,9 +254,19 @@ class TestAssistantModels:
         adventure = Adventure.objects.create(
             title="Adventure One", description="First Adventure", story=story
         )
+
+        # Create Character
+        character = Character.objects.create(
+            name="Character One",
+            description="First Character",
+            voice="alloy"
+        )
+
+        # Create Quest with Character
         quest = Quest.objects.create(
             title="Quest One",
             description="First Quest",
+            character=character,
             adventure=adventure,
         )
 
@@ -229,7 +290,6 @@ class TestAssistantModels:
         # Ensure that API create is not called since openai_assistant_id is already set
         mock_client.beta.assistants.create.assert_not_called()
 
-
     @pytest.mark.django_db(transaction=True)
     @patch("apps.assistants.models.client")
     def test_assistant_save_failure(self, mock_client):
@@ -249,11 +309,21 @@ class TestAssistantModels:
             title="Adventure One", description="First Adventure", story=story
         )
 
+        # Create Character
+        character = Character.objects.create(
+            name="Character One",
+            description="First Character",
+            voice="alloy"
+        )
+
+        # Create Quest with Character
         quest = Quest.objects.create(
             title="Quest One",
             description="First Quest",
+            character=character,
             adventure=adventure,
         )
+
         quest_instructions = QuestInstructions.objects.create(
             quest=quest, name="Quest Specific", instructions="Quest Instructions"
         )
@@ -295,11 +365,21 @@ class TestAssistantModels:
             title="Adventure One", description="First Adventure", story=story
         )
 
+        # Create Character
+        character = Character.objects.create(
+            name="Character One",
+            description="First Character",
+            voice="alloy"
+        )
+
+        # Create Quest with Character
         quest = Quest.objects.create(
             title="Quest One",
             description="First Quest",
+            character=character,
             adventure=adventure,
         )
+
         quest_instructions = QuestInstructions.objects.create(
             quest=quest, name="Quest Specific", instructions="Quest Instructions"
         )

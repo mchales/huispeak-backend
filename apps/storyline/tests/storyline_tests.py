@@ -1,9 +1,9 @@
 import pytest
-from django.db import IntegrityError
-from apps.storyline.models import Story, Adventure, Quest
+from apps.storyline.models import Story, Adventure, Quest, Character, Objectives
 
 @pytest.mark.django_db
 class TestOrderedModels:
+
     def test_story_insertion(self):
         # Insert stories without specifying story_num
         story1 = Story.objects.create(title="Story One", description="First Story")
@@ -31,7 +31,6 @@ class TestOrderedModels:
         story3 = Story.objects.create(title="Story Three", description="Third Story")
 
         # Move story3 from position 3 to position 1
-        old_order = story3.story_num
         story3.story_num = 1
         story3.save()
 
@@ -118,8 +117,9 @@ class TestOrderedModels:
         adventure = Adventure.objects.create(title="Main Adventure", description="Main Adventure Description", story=story)
 
         # Create quests
-        quest1 = Quest.objects.create(title="Quest One", description="First Quest",  adventure=adventure)
-        quest2 = Quest.objects.create(title="Quest Two", description="Second Quest", adventure=adventure)
+        character = Character.objects.create(name="Hero", description="Brave hero")
+        quest1 = Quest.objects.create(title="Quest One", description="First Quest", adventure=adventure, character=character)
+        quest2 = Quest.objects.create(title="Quest Two", description="Second Quest", adventure=adventure, character=character)
 
         assert quest1.quest_num == 1
         assert quest2.quest_num == 2
@@ -167,7 +167,7 @@ class TestOrderedModels:
         story = Story.objects.create(title="Main Story", description="Main Story Description")
         adventure = Adventure.objects.create(title="Main Adventure", description="Main Adventure Description", story=story, include=False)
 
-        # adventure should have no adventure_num
+        # Adventure should have no adventure_num
         assert adventure.adventure_num is None
 
         # Include adventure
@@ -201,9 +201,10 @@ class TestOrderedModels:
         # Create story, adventure, and quests
         story = Story.objects.create(title="Main Story", description="Main Story Description")
         adventure = Adventure.objects.create(title="Main Adventure", description="Main Adventure Description", story=story)
-        quest1 = Quest.objects.create(title="Quest One", description="First Quest",  adventure=adventure)
-        quest2 = Quest.objects.create(title="Quest Two", description="Second Quest",  adventure=adventure)
-        quest3 = Quest.objects.create(title="Quest Three", description="Third Quest",  adventure=adventure)
+        character = Character.objects.create(name="Hero", description="Brave hero")
+        quest1 = Quest.objects.create(title="Quest One", description="First Quest", adventure=adventure, character=character)
+        quest2 = Quest.objects.create(title="Quest Two", description="Second Quest", adventure=adventure, character=character)
+        quest3 = Quest.objects.create(title="Quest Three", description="Third Quest", adventure=adventure, character=character)
 
         # Delete quest2
         quest2.delete()
@@ -219,9 +220,10 @@ class TestOrderedModels:
         # Create story, adventure, and quests
         story = Story.objects.create(title="Main Story", description="Main Story Description")
         adventure = Adventure.objects.create(title="Main Adventure", description="Main Adventure Description", story=story)
-        quest1 = Quest.objects.create(title="Quest One", description="First Quest", adventure=adventure)
-        quest2 = Quest.objects.create(title="Quest Two", description="Second Quest",  adventure=adventure)
-        quest3 = Quest.objects.create(title="Quest Three", description="Third Quest",  adventure=adventure)
+        character = Character.objects.create(name="Hero", description="Brave hero")
+        quest1 = Quest.objects.create(title="Quest One", description="First Quest", adventure=adventure, character=character)
+        quest2 = Quest.objects.create(title="Quest Two", description="Second Quest", adventure=adventure, character=character)
+        quest3 = Quest.objects.create(title="Quest Three", description="Third Quest", adventure=adventure, character=character)
 
         # Move quest3 from position 3 to position 1
         quest3.quest_num = 1
@@ -235,3 +237,103 @@ class TestOrderedModels:
         assert quest3.quest_num == 1
         assert quest1.quest_num == 2
         assert quest2.quest_num == 3
+
+    def test_character_creation(self):
+        character = Character.objects.create(name="Hero", description="Brave hero", voice="alloy")
+        assert character.name == "Hero"
+        assert character.description == "Brave hero"
+        assert character.voice == "alloy"
+
+    def test_character_as_text(self):
+        character = Character.objects.create(name="Hero", description="Brave hero", voice="alloy")
+        expected_text = "Name: Hero\nDescription: Brave hero\n"
+        assert character.as_text() == expected_text
+
+    def test_quest_as_text(self):
+        # Create necessary objects
+        character = Character.objects.create(name="Hero", description="Brave hero", voice="alloy")
+        story = Story.objects.create(title="Main Story", description="Main Story Description")
+        adventure = Adventure.objects.create(title="Main Adventure", description="Main Adventure Description", story=story)
+        quest = Quest.objects.create(title="Quest One", description="First Quest", adventure=adventure, character=character)
+
+        # Create objectives
+        Objectives.objects.create(quest=quest, objective="Find the treasure")
+        Objectives.objects.create(quest=quest, objective="Defeat the dragon")
+
+        expected_text = (
+            "Title: Quest One\n"
+            "Description: First Quest\n"
+            "Objectives: - Find the treasure\n- Defeat the dragon\n"
+        )
+        assert quest.as_text() == expected_text
+
+    def test_quest_as_text_no_objectives(self):
+        # Create necessary objects
+        character = Character.objects.create(name="Hero", description="Brave hero", voice="alloy")
+        story = Story.objects.create(title="Main Story", description="Main Story Description")
+        adventure = Adventure.objects.create(title="Main Adventure", description="Main Adventure Description", story=story)
+        quest = Quest.objects.create(title="Quest Two", description="Second Quest", adventure=adventure, character=character)
+
+        expected_text = (
+            "Title: Quest Two\n"
+            "Description: Second Quest\n"
+            "Objectives: \n"
+        )
+        assert quest.as_text() == expected_text
+
+    def test_objectives_creation(self):
+        character = Character.objects.create(name="Hero", description="Brave hero", voice="alloy")
+        story = Story.objects.create(title="Main Story", description="Main Story Description")
+        adventure = Adventure.objects.create(title="Main Adventure", description="Main Adventure Description", story=story)
+        quest = Quest.objects.create(title="Quest One", description="First Quest", adventure=adventure, character=character)
+        objective = Objectives.objects.create(quest=quest, objective="Find the treasure")
+
+        assert objective.quest == quest
+        assert objective.objective == "Find the treasure"
+
+    def test_including_excluded_story(self):
+        # Insert stories
+        story1 = Story.objects.create(title="Story One", description="First Story")
+        story2 = Story.objects.create(title="Story Two", description="Second Story", include=False)
+        story3 = Story.objects.create(title="Story Three", description="Third Story")
+
+        # Include story2
+        story2.include = True
+        story2.save()
+
+        # Refresh instances
+        story1.refresh_from_db()
+        story2.refresh_from_db()
+        story3.refresh_from_db()
+
+        assert story1.story_num == 1
+        assert story2.story_num == 3  # Should be added to the end
+        assert story3.story_num == 2
+
+    def test_reordering_after_insertion(self):
+        # Insert stories with specific positions
+        story1 = Story.objects.create(title="Story One", description="First Story")
+        story2 = Story.objects.create(title="Story Two", description="Second Story", story_num=1)
+
+        # Refresh instances
+        story1.refresh_from_db()
+        story2.refresh_from_db()
+
+        assert story1.story_num == 2  # Shifted down due to insertion at position 1
+        assert story2.story_num == 1
+
+    def test_delete_story_with_adventures_and_quests(self):
+        # Create story
+        story = Story.objects.create(title="Epic Story", description="An epic tale")
+
+        # Create adventure and quests
+        adventure = Adventure.objects.create(title="Adventure One", description="First Adventure", story=story)
+        character = Character.objects.create(name="Hero", description="Brave hero")
+        Quest.objects.create(title="Quest One", description="First Quest", adventure=adventure, character=character)
+
+        # Delete story
+        story.delete()
+
+        # Check that adventure and quests are deleted
+        assert not Adventure.objects.filter(pk=adventure.pk).exists()
+        assert not Quest.objects.filter(adventure=adventure).exists()
